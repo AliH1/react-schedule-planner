@@ -1,0 +1,147 @@
+$font-stack: Helvetica, sans-serif;
+$primary-color: #ff5858;
+$secondary-color: #ffffff;
+$text-color: #101010;
+$misc-color: #58FFFF;
+$hover-color: #00f0f0;
+$primary-shade: #ffe5e5;
+
+body {
+  font: 100% $font-stack;
+  color: $text-color;
+  margin: 0;
+}
+
+header, footer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background-color: $primary-color;
+  height: 5rem;
+
+  img {
+    width: 6rem;
+    height: auto;
+  }
+
+  h2 {
+    font-size: 1.8rem;
+  }
+
+  h3{
+    font-size: 1rem;
+  }
+}
+
+nav {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  button {
+    color: $text-color;
+    font-weight: bold;
+    background-color: $misc-color;
+    height: 2rem;
+    width: 5rem;
+    border-radius: 0.5rem;
+    &:hover{
+      background: $hover-color;
+    }
+  }
+}
+
+main {
+  .rbc-today {
+    background-color: $primary-shade;
+  }
+  .rbc-event, .rbc-header, .rbc-event.rbc-selected{
+    background-color: $primary-color;
+  }
+
+  margin: 2rem;
+  .login-form-container, .register-form-container {
+    display: flex;
+    flex-direction: column;
+    margin: 2rem;
+    gap: 1rem;
+
+    div {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    label {
+      color: $text-color;
+      font-size: 1rem;
+    }
+    input{
+      width: 20rem;
+      font-size: 1rem;
+      height: 1.5rem;
+      border-radius: 0.5rem;
+    }
+    .error-msg {
+      font-size: 0.6rem;
+      color: red;
+      margin-left: 0.4rem;
+    }
+    button {
+      color: $text-color;
+      font-weight: bold;
+      background-color: $misc-color;
+      margin-top: 2rem;
+      height: 2rem;
+      border-radius: 1rem;
+      &:hover{
+        background-color: $hover-color;
+      }
+      &:disabled{
+        background-color: $misc-color;
+      }
+    }
+  }
+  .modal{
+    border-color: $primary-color;
+    border-radius: 0.5rem;
+
+    >button {
+      margin-left: 0;
+      color: $text-color;
+      float: right;
+      background-color: transparent;
+      border: none;
+      &:hover {
+        color: $primary-color;
+      }
+    }
+
+    &::backdrop {
+      background: rgba(0, 0, 0, 0.7);
+    }
+  }
+
+  .event-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    .delete-event {
+      color: $text-color;
+      font-weight: bold;
+      background-color: $misc-color;
+      margin-top: 2rem;
+      height: 2rem;
+      border-radius: 1rem;
+      &:hover{
+        background-color: $hover-color;
+      }
+      &:disabled{
+        background-color: $misc-color;
+      }
+    }
+  }
+}
