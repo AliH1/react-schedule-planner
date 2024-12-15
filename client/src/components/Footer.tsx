@@ -3,7 +3,6 @@ import logo from "../assets/logo.png";
 
 type footerProps = {
   userName: String;
-
 }
 
 export default function Footer(props : footerProps) {

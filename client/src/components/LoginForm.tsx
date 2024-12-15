@@ -5,17 +5,20 @@ type loginFormProps = {
 }
 export default function LoginForm(props: loginFormProps) {
   const [error, setError] = useState('');
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     //todo check if email and password match update error accordingly
     e.preventDefault();
-    props.handleLogin('Harry');
+    props.handleLogin(username);
   }
 
-  const handleEmailChange = (e: React.FormEvent<HTMLInputElement>) => {
-    setEmail(e.currentTarget.value);
+  function capitalizeFirstLetterOnly(str: String) {
+    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+  }
+  const handleUsernameChage= (e: React.FormEvent<HTMLInputElement>) => {
+    setUsername(capitalizeFirstLetterOnly(e.currentTarget.value));
   }
 
   const handlePasswordChange = (e: React.FormEvent<HTMLInputElement>) => {
@@ -25,8 +28,8 @@ export default function LoginForm(props: loginFormProps) {
   return(
       <form onSubmit={handleSubmit} className='login-form-container'>
         <div>
-          <label htmlFor='email'>Email</label>
-          <input type='email' id='email' placeholder='Enter email' autoComplete="off" onChange={handleEmailChange} required/>
+          <label htmlFor='username'>Username</label>
+          <input type='text' id='username' placeholder='Enter username' autoComplete="off" onChange={handleUsernameChage} required/>
         </div>
         <div>
           <label htmlFor='password'>Password</label>

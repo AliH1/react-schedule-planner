@@ -11,7 +11,6 @@ import { enCA } from 'date-fns/locale/en-CA';
 import { addHours } from 'date-fns/addHours';
 import Modal from './Modal';
 
-
 const locales = {
   'en-CA': enCA,
 }
