@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { Calendar, Event, dateFnsLocalizer } from 'react-big-calendar';
 import withDragAndDrop, { withDragAndDropProps } from 'react-big-calendar/lib/addons/dragAndDrop';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
@@ -8,8 +8,9 @@ import { parse } from 'date-fns/parse';
 import { startOfWeek } from 'date-fns/startOfWeek';
 import { getDay } from 'date-fns/getDay';
 import { enCA } from 'date-fns/locale/en-CA';
-import { addHours } from 'date-fns/addHours';
+import { subHours } from 'date-fns';
 import Modal from './Modal';
+import {deleteEvent, createEvent, getUserEvents, updateEvent} from '../api';
 
 const locales = {
   'en-CA': enCA,
@@ -31,64 +32,157 @@ type TimeSlot = {
 }
 
 type EventCalendarProps = {
-  userName: String;
+  userName: string;
 }
 
-export default function EventCalendar(props: EventCalendarProps) {
-  const [events, setEvents] = useState<Event[]>([
-    {
-      title: 'test',
-      start: new Date(),
-      end: addHours(new Date(), 2)
-    },
-  ]);
+export default function EventCalendar({userName}: EventCalendarProps) {
+  const [events, setEvents] = useState<Event[]>([]);
   const [eventModal, setEventModal] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<Event>();
 
-  const handleSelectSlot = useCallback(({ start, end }: TimeSlot) => {
+  useEffect(() => {
+    const fetchUserEvents = async() => {
+      const submit = await getUserEvents(userName);
+      if(submit.message === 'events retrieved'){
+        const eventArray = submit.events;
+        const newEvents: Event[] = [];
+        for(let i = 0; i < eventArray.length; i++){
+          const start = new Date(eventArray[i].start_time);
+          const end = new Date(eventArray[i].end_time);
+          const title = eventArray[i].title;
+          //the dates we get from postgresql are in utc so you need to subtract 5 hours to convert for local est
+          const event: Event = {
+            start: subHours(start, 5),
+            end: subHours(end, 5),
+            title: title
+          }
+          newEvents.push(event);
+        }
+        setEvents(newEvents);
+      }
+    }
+    if(userName !== 'Guest'){
+      fetchUserEvents();
+    }
+    else{
+      setEvents([]);
+    }
+  }, [userName]);
+
+  const handleSelectSlot = async ({ start, end }: TimeSlot) => {
       const title = window.prompt('New Event Name')
       if (title) {
-        setEvents((prev) => [...prev, { start, end, title }])
+        //api request for create event
+        if(userName !== 'Guest'){
+          const username = userName;
+          const submit = await createEvent({title, start, end, username});
+          if(submit.message === 'Event created successfully'){
+            setEvents((prev) => [...prev, { start, end, title }]);
+          }
+        }
+        else{
+          setEvents((prev) => [...prev, { start, end, title }]);
+        }
       }
-    }, [setEvents]);
+    };
 
   const handleSelectEvent = useCallback( (event: Event) => {
     setSelectedEvent(event);
     setEventModal(true);
    }, []);
 
-  const onEventResize: withDragAndDropProps['onEventResize'] = data => {
+  const onEventResize: withDragAndDropProps['onEventResize'] = async data => {
     const { start, end } = data;
     const eventIndex = events.findIndex((event) => data['event'] === event);
-    const newEvents = events;
-    newEvents[eventIndex] = {
-        title: events[eventIndex].title,
-        start: new Date(start),
-        end: new Date(end)
-    };
-    setEvents(newEvents);
+    //api for event update
+    if(userName !== 'Guest'){
+      const title = events[eventIndex].title?.toString();
+      const start_time = events[eventIndex].start;
+      const end_time = events[eventIndex].end;
+      const username = userName;
+      const newStart = new Date(start);
+      const newEnd = new Date(end);
+      const submit = await updateEvent({title, start_time, end_time, username, newStart, newEnd});
+      if(submit.message === 'Event Time updated successfully'){
+        const newEvents = [...events];
+        newEvents[eventIndex] = {
+            title: events[eventIndex].title,
+            start: newStart,
+            end: newEnd
+        };
+        setEvents(newEvents);
+      }
+    }
+    else{
+      const newEvents = [...events];
+      newEvents[eventIndex] = {
+          title: events[eventIndex].title,
+          start: new Date(start),
+          end: new Date(end)
+        };
+      setEvents(newEvents);
+    }
   }
 
-  const onEventDrop: withDragAndDropProps['onEventDrop'] = data => {
+  const onEventDrop: withDragAndDropProps['onEventDrop'] = async data => {
     const { start, end } = data;
     const eventIndex = events.findIndex((event) => data['event'] === event);
-    const newEvents = events;
-    newEvents[eventIndex] = {
-        title: events[eventIndex].title,
-        start: new Date(start),
-        end: new Date(end)
-    };
-    setEvents(newEvents);
+    //api for event update
+    if(userName !== 'Guest'){
+      const title = events[eventIndex].title?.toString();
+      const start_time = events[eventIndex].start;
+      const end_time = events[eventIndex].end;
+      const username = userName;
+      const newStart = new Date(start);
+      const newEnd = new Date(end);
+      const submit = await updateEvent({title, start_time, end_time, username, newStart, newEnd});
+      if(submit.message === 'Event Time updated successfully'){
+        const newEvents = [...events];
+        newEvents[eventIndex] = {
+            title: events[eventIndex].title,
+            start: newStart,
+            end: newEnd
+        };
+        setEvents(newEvents);
+      }
+    }
+    else{
+      const newEvents = [...events];
+      newEvents[eventIndex] = {
+          title: events[eventIndex].title,
+          start: new Date(start),
+          end: new Date(end)
+        };
+      setEvents(newEvents);
+    }
   }
 
-const handleEventDelete = () => {
-  //TODO remove from database aswell
+const handleEventDelete = async() => {
+  if(selectedEvent === undefined){
+    return;
+  }
   const eventIndex = events.findIndex((event) => selectedEvent === event);
-  const newEvents = events;
-  newEvents.splice(eventIndex, 1);
-  setEvents(newEvents);
-  setEventModal(false);
-  setSelectedEvent(undefined);
+  const newEvents = [...events];
+  if(userName !== 'Guest'){
+    const title = selectedEvent.title?.toString();
+    const start = selectedEvent.start;
+    const end = selectedEvent.end;
+    const username = userName;
+    const submit = await deleteEvent({title, start, end, username});
+    if(submit.message == 'Event Deleted successfully'){
+      newEvents.splice(eventIndex, 1);
+      setEvents(newEvents);
+      setEventModal(false);
+      setSelectedEvent(undefined);
+    }
+  }
+  else{
+    newEvents.splice(eventIndex, 1);
+    setEvents(newEvents);
+    setEventModal(false);
+    setSelectedEvent(undefined);
+  }
+
 }
 
   return (

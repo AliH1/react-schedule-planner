@@ -1,4 +1,4 @@
-import { useEffect, useState} from 'react';
+import { useState } from 'react';
 import EventCalendar from './components/EventCalendar';
 import './App.scss';
 import Header from './components/Header';
@@ -8,27 +8,17 @@ import LoginForm from './components/LoginForm';
 import RegisterForm from './components/RegisterForm';
 
 function App() {
-  const [userName, setUserName] = useState<String>('Guest');
+  const [userName, setUserName] = useState<string>('Guest');
   const [loginModal, setLoginModal] = useState(false);
   const [registerModal, setRegisterModal] = useState(false);
 
-  //this code will basically warn the user that created events will be lost if they close the tab without creating an account
-  useEffect(() => {
-    const handler = (event: BeforeUnloadEvent) => {
-      event.preventDefault();
-    };
-    if (userName === 'Guest') {
-      window.addEventListener('beforeunload', handler);
-      return () => {
-        window.removeEventListener('beforeunload', handler);
-      };
-    }
-    return () => {};
-  }, [userName]);
-
-  const handleLogin = (user: String) => {
-    setUserName(user);
+  const handleLogin = (user: string) => {
     setLoginModal(false);
+    setUserName(user);
+  }
+
+  const handleRegister = () =>{
+    setRegisterModal(false);
   }
 
   const handleLogOut = () => {
@@ -46,10 +36,10 @@ function App() {
       <main>
         <EventCalendar userName={userName}/>
         <Modal openModal={loginModal} closeModal={() => setLoginModal(false)} >
-          <LoginForm handleLogin={handleLogin}/>
+          <LoginForm handleLogin={handleLogin} openModal={loginModal} />
         </Modal>
         <Modal openModal={registerModal} closeModal={() => setRegisterModal(false)} >
-          <RegisterForm />
+          <RegisterForm handleRegister={handleRegister} openModal={registerModal}/>
         </Modal>
       </main>
       <Footer userName={userName} />
