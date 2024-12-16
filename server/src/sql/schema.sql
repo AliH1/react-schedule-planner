@@ -10,7 +10,7 @@ CREATE TABLE users.users (
 CREATE TABLE users.events (
     id SERIAL PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
-    start_time timestamp with time zone NOT NULL,
+    start_time timestamp NOT NULL,
     end_time timestamp NOT NULL,
     event_user VARCHAR(30) REFERENCES users.users(username)
 )
