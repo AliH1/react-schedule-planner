@@ -161,7 +161,7 @@ const handleEventDelete = async() => {
   if(selectedEvent === undefined){
     return;
   }
-  const eventIndex = events.findIndex((event) => selectedEvent === event);
+  const eventIndex = events.findIndex((event) => JSON.stringify(selectedEvent) === JSON.stringify(event));
   const newEvents = [...events];
   if(userName !== 'Guest'){
     const title = selectedEvent.title?.toString();
