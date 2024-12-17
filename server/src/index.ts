@@ -30,6 +30,6 @@ app.use('/api/user', userRouter);
 app.use('/api/event', eventRouter);
 
 // Start the server
-app.listen(8080, async () => {
+app.listen(8080, () => {
   console.log('Server is running on http://localhost:8080');
 });
