@@ -20,9 +20,3 @@ https://github.com/user-attachments/assets/4f2c0808-9336-48f6-8d31-f2fa2e4fa027
 5. install packages for both folders (npm i)
 6. type "npm run dev" in terminal for client and "npm start" in terminal for server
 7. Use the app that is running on port 3000
-
-## Demo videos:
-
-https://github.com/user-attachments/assets/ec1b79c3-8181-41e1-978d-a51c9db33099
-
-https://github.com/user-attachments/assets/4f2c0808-9336-48f6-8d31-f2fa2e4fa027
