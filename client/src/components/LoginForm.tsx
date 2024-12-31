@@ -5,6 +5,7 @@ type loginFormProps = {
   handleLogin: Function;
   openModal: boolean;
 }
+
 export default function LoginForm(props: loginFormProps) {
   const [error, setError] = useState('');
   const [username, setUsername] = useState('');
