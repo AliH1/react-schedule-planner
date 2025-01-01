@@ -4,7 +4,7 @@
 A schedule planner web application with an interactable calendar.  Implments CRUD operations for all scheduled events along wiith register/login funcationality inorder to save schedule. The web application can also be used in guest mode but progress can not be saved although a screenshot can be taken.
 
  ## Technology
- Frontend: React, Typescript, Vite
+ Frontend: React, Typescript, Vite <br />
  Backend: Node.js, Express.js, PostgresSQL, Typescript
 
 ## Demo videos:
